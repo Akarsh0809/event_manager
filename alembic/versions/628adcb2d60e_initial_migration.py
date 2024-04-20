@@ -36,10 +36,28 @@ def upgrade() -> None:
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.PrimaryKeyConstraint('id')
+                            sa.Column('id', sa.UUID(), nullable=False),
+        sa.Column('username', sa.String(length=50), nullable=False),
+        sa.Column('email', sa.String(length=255), nullable=False),
+        sa.Column('email_verified', sa.Boolean(), nullable=False, server_default='false'),
+        sa.Column('hashed_password', sa.String(length=255), nullable=False),
+        sa.Column('full_name', sa.String(length=100), nullable=True, server_default=''),
+        sa.Column('bio', sa.String(length=500), nullable=True, server_default=''),
+        sa.Column('is_professional', sa.Boolean(), nullable=True, server_default='false'),
+        sa.Column('professional_status_updated_at', sa.DateTime(timezone=True), nullable=True),
+        sa.Column('profile_picture_url', sa.String(length=255), nullable=True, server_default=''),
+        sa.Column('role', sa.Enum('ADMIN', 'USER', 'PRO', 'ANONYMOUS', name='userrole'), nullable=False, server_default='USER'),
+        sa.Column('last_login_at', sa.DateTime(timezone=True), nullable=True),
+        sa.Column('failed_login_attempts', sa.Integer(), nullable=True),
+        sa.Column('is_locked', sa.Boolean(), nullable=True, server_default='false'),
+        sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
+        sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
+        sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_users_email'), 'users', ['email'], unique=True)
     op.create_index(op.f('ix_users_username'), 'users', ['username'], unique=True)
     # ### end Alembic commands ###
+    op.drop_table('users') # ### end Alembic commands ###
 
 
 def downgrade() -> None:
